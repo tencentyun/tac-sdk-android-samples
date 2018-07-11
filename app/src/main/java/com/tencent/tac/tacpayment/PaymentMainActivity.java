@@ -1,12 +1,12 @@
 package com.tencent.tac.tacpayment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -28,20 +28,26 @@ import com.tencent.tac.payment.TACPaymentCallback;
 import com.tencent.tac.payment.TACPaymentOptions;
 import com.tencent.tac.payment.TACPaymentService;
 import com.tencent.tac.tacpayment.order.KeyProvider;
+import com.tencent.tac.tacpayment.order.PaymentAccountRecharge;
 import com.tencent.tac.tacpayment.order.PaymentCallback;
+import com.tencent.tac.tacpayment.order.PaymentOrderGoods;
+import com.tencent.tac.tacpayment.order.PaymentPay;
+import com.tencent.tac.tacpayment.order.PaymentPresent;
+import com.tencent.tac.tacpayment.order.PaymentRequestBalance;
 import com.tencent.tac.tacpayment.order.Tools;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
  * Copyright 2010-2017 Tencent Cloud. All Rights Reserved.
  */
 
-public class PaymentMainActivity extends Activity {
+public class PaymentMainActivity extends AppCompatActivity {
 
 
     private Handler handler;
@@ -81,46 +87,73 @@ public class PaymentMainActivity extends Activity {
         handler.removeCallbacksAndMessages(null);
     }
 
+
+    private void onNormalRequest(Map<String, String> map, String userId, String orderNo, String channel) {
+
+
+        map.put("user_id", userId);
+        map.put("channel", channel);
+        map.put("out_trade_no", orderNo);
+        map.put("product_id", "product_test");
+        map.put("currency_type", "CNY");
+        map.put("amount", "1");
+        map.put("product_name", "金元宝");
+        map.put("product_detail", "你懂得");
+        //map.put("original_amount", "100");
+
+        map.put("ts", Tools.getGMTime());
+    }
+
+    private void onSaveRequest(Map<String, String> map, String userId, String orderNo, String channel) {
+
+        map.put("user_id", userId);
+        map.put("channel", channel);
+        map.put("out_trade_no", orderNo);
+        map.put("product_id", "product_test");
+        map.put("currency_type", "CNY");
+        map.put("amount", "100000");
+        map.put("num", "1");
+        map.put("product_name", "金元宝");
+        map.put("product_detail", "你懂得");
+        //map.put("original_amount", "1");   // save 接口不需要 original_amount 参数
+        map.put("type", "save");
+
+        map.put("ts", Tools.getGMTime());
+    }
+
+    private String contentToPayInfo(String result) {
+
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(result);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "";
+        }
+        return jsonObject.optString("pay_info");
+    }
+
+
     public void onWechatPaymentClicked(View view) {
 
         TACApplicationOptions applicationOptions = TACApplication.options();
         TACPaymentOptions tacPaymentOptions = applicationOptions.sub("payment");
         String appid = tacPaymentOptions.getAppid();
+        appid = "TC100008_005";
         final String appKey = KeyProvider.MIDAS_SECRET_KEY;
         final HashMap<String, String> map = new HashMap<>();
         final String userId = "rickenwang";
         final String orderNo = "open_" + System.currentTimeMillis();
-        map.put("user_id", userId);
-        map.put("channel", "wechat");
-        map.put("out_trade_no", orderNo);
-        map.put("product_id", "product_test");
-        map.put("currency_type", "CNY");
-        map.put("amount", "4");
-        map.put("product_name", "金元宝");
-        map.put("product_detail", "你懂得");
-        map.put("original_amount", "1");
-        map.put("ts", Tools.getGMTime());
+        onSaveRequest(map, userId, orderNo, "wechat");
+        //onNormalRequest(map, userId, orderNo, "wechat");
 
-
-        // 不建议在终端直接下单，需要在 com.tencent.tac.KeyProvider 类中配置密钥，不安全
-//        new PaymentOrderGoods(appid, appKey, map).connect(new PaymentCallback() {
-//            @Override
-//            public void onResult(String payInfo) {
-//
-//                handler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        launchPay(userId, payInfo);
-//                    }
-//                });
-//            }
-//        });
-
-        // 在后台下单
-        new PaymentOrder(appid, userId, "wechat", orderNo).connect(new PaymentCallback() {
+        // TODO: 2018/4/27  后台下单添加 save 字段
+        // 不建议在终端直接下单，需要在 com.tencent.tac.tacpayment.order.KeyProvider 类中配置密钥，不安全
+        new PaymentOrderGoods(appid, appKey, map).connect(new PaymentCallback() {
             @Override
-            public void onResult(String payInfo) {
+            public void onResult(String result) {
 
+                final String payInfo = contentToPayInfo(result);
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -129,6 +162,20 @@ public class PaymentMainActivity extends Activity {
                 });
             }
         });
+
+        // 在后台下单
+//        new PaymentOrder(appid, userId, "wechat", orderNo).connect(new PaymentCallback() {
+//            @Override
+//            public void onResult(String payInfo) {
+//
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        launchPay(userId, payInfo, orderNo);
+//                    }
+//                });
+//            }
+//        });
 
     }
 
@@ -136,41 +183,20 @@ public class PaymentMainActivity extends Activity {
 
         TACApplicationOptions applicationOptions = TACApplication.options();
         TACPaymentOptions tacPaymentOptions = applicationOptions.sub("payment");
-        final String appid = tacPaymentOptions.getAppid();
+        String appid = tacPaymentOptions.getAppid();
+        //appid = "TC100008_005";
         final String appKey = KeyProvider.MIDAS_SECRET_KEY;
         final HashMap<String, String> map = new HashMap<>();
         final String userId = "rickenwang";
         final String orderNo = "open_" + System.currentTimeMillis();
-        map.put("user_id", userId);
-        map.put("channel", "qqwallet");
-        map.put("out_trade_no", orderNo);
-        map.put("product_id", "product_test");
-        map.put("currency_type", "CNY");
-        map.put("amount", "1");
-        map.put("original_amount", "1");
-        map.put("product_name", "金元宝");
-        map.put("product_detail", "你懂得");
-        map.put("ts", Tools.getGMTime());
-
-        // 不建议在终端直接下单，需要在 com.tencent.tac.KeyProvider 类中配置密钥，不安全
-//        new PaymentOrderGoods(appid, appKey, map).connect(new PaymentCallback() {
-//            @Override
-//            public void onResult(String payInfo) {
-//
-//                handler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        launchPay(userId, payInfo);
-//                    }
-//                });
-//            }
-//        });
-
-        // 在后台下单
-        new PaymentOrder(appid, userId, "qqwallet", orderNo).connect(new PaymentCallback() {
+        onNormalRequest(map, userId, orderNo, "qqwallet");
+        //onSaveRequest(map, userId, orderNo, "qqwallet");
+        // 不建议在终端直接下单，需要在 com.tencent.tac.tacpayment.order.KeyProvider 类中配置密钥，不安全
+        new PaymentOrderGoods(appid, appKey, map).connect(new PaymentCallback() {
             @Override
-            public void onResult(String payInfo) {
+            public void onResult(String result) {
 
+                final String payInfo = contentToPayInfo(result);
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -179,6 +205,20 @@ public class PaymentMainActivity extends Activity {
                 });
             }
         });
+
+        // 在后台下单
+//        new PaymentOrder(appid, userId, "qqwallet", orderNo).connect(new PaymentCallback() {
+//            @Override
+//            public void onResult(String payInfo) {
+//
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        launchPay(userId, payInfo, orderNo);
+//                    }
+//                });
+//            }
+//        });
     }
 
     private void launchPay(String userId, String payInfo, final String orderNo) {
@@ -222,6 +262,7 @@ public class PaymentMainActivity extends Activity {
             @Override
             public void onSuccess(HttpResult<String> result) {
                 try {
+                    Log.d("callback", result.content());
                     JSONObject json = new JSONObject(result.content());
                     String payOrderId = json.getString("pay_channel_orderid");
                     if (!TextUtils.isEmpty(payOrderId)) {
@@ -242,4 +283,111 @@ public class PaymentMainActivity extends Activity {
         });
     }
 
+    private void showResult(final String result) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(PaymentMainActivity.this, result, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+    public void onAccountRecharge(View view) {
+
+        String appid = "TC100008_001";
+        final String appKey = KeyProvider.MIDAS_SECRET_KEY;
+        final HashMap<String, String> map = new HashMap<>();
+        final String userId = "rickenwang";
+        final String orderNo = "open_" + System.currentTimeMillis();
+        map.put("user_id", userId);
+        map.put("amt", "100");
+        map.put("billno", orderNo);
+        map.put("ts", Tools.getGMTime());
+
+
+
+        // 不建议在终端直接下单，需要在 com.tencent.tac.KeyProvider 类中配置密钥，不安全
+        new PaymentAccountRecharge(appid, appKey, map).connect(new PaymentCallback() {
+            @Override
+            public void onResult(String result) {
+                Log.i("payment", result);
+                showResult(result);
+            }
+        });
+
+    }
+
+    public void onRequestBalance(View view) {
+
+        String appid = "TC100008_005";
+        final String appKey = KeyProvider.MIDAS_SECRET_KEY;
+        final HashMap<String, String> map = new HashMap<>();
+        final String userId = "rickenwang";
+
+        map.put("user_id", userId);
+        map.put("ts", Tools.getGMTime());
+
+
+
+        // 不建议在终端直接下单，需要在 com.tencent.tac.KeyProvider 类中配置密钥，不安全
+        new PaymentRequestBalance(appid, appKey, map).connect(new PaymentCallback() {
+            @Override
+            public void onResult(String result) {
+                Log.i("payment", result);
+                showResult(result);
+            }
+        });
+
+    }
+
+    public void onPaymentPay(View view) {
+
+        String appid = "TC100008_001";
+        final String appKey = KeyProvider.MIDAS_SECRET_KEY;
+        final HashMap<String, String> map = new HashMap<>();
+        final String userId = "rickenwang";
+
+        final String orderNo = "open_" + System.currentTimeMillis();
+        map.put("amt", "20");
+        map.put("billno", orderNo);
+        map.put("user_id", userId);
+        map.put("ts", Tools.getGMTime());
+
+
+
+        // 不建议在终端直接下单，需要在 com.tencent.tac.KeyProvider 类中配置密钥，不安全
+        new PaymentPay(appid, appKey, map).connect(new PaymentCallback() {
+            @Override
+            public void onResult(String result) {
+                Log.i("payment", result);
+                showResult(result);
+            }
+        });
+
+    }
+
+    public void onPaymentPresent(View view) {
+
+        String appid = "TC100008_001";
+        final String appKey = KeyProvider.MIDAS_SECRET_KEY;
+        final HashMap<String, String> map = new HashMap<>();
+        final String userId = "rickenwang";
+
+        final String orderNo = "open_" + System.currentTimeMillis();
+        map.put("amt", "20");
+        map.put("billno", orderNo);
+        map.put("user_id", userId);
+        map.put("ts", Tools.getGMTime());
+
+        // 不建议在终端直接下单，需要在 com.tencent.tac.KeyProvider 类中配置密钥，不安全
+        new PaymentPresent(appid, appKey, map).connect(new PaymentCallback() {
+            @Override
+            public void onResult(String result) {
+                Log.i("payment", result);
+                showResult(result);
+            }
+        });
+
+    }
 }

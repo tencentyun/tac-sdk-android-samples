@@ -1,19 +1,18 @@
 package com.tencent.tac.tacanalytics;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.tencent.tac.R;
-import com.tencent.tac.analytics.TACAnalyticsService;
 import com.tencent.tac.analytics.TACAnalyticsEvent;
-import com.tencent.tac.analytics.TACNetworkMetrics;
+import com.tencent.tac.analytics.TACAnalyticsService;
 
 import java.util.Properties;
 
-public class AnalyticsMainActivity extends Activity {
+public class AnalyticsMainActivity extends AppCompatActivity {
 
 	private static final String TAG = "TACAnalyticsDemo";
 
@@ -23,38 +22,71 @@ public class AnalyticsMainActivity extends Activity {
 		setContentView(R.layout.analytics_activity_first);
 	}
 
+	private void showFeedback(String msg) {
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+	}
+
 	public void trackEvent(View v) {
-		TACAnalyticsService.getInstance().trackEvent(this, new TACAnalyticsEvent("oneEvent"));
+		String eventId = "oneEvent";
+		TACAnalyticsService.getInstance().trackEvent(this, new TACAnalyticsEvent(eventId));
+		showFeedback(String.format("已统计事件 %s", eventId));
 	}
 
 	public void trackEventWithArgs(View v) {
+		String eventId = "oneEvent";
+		String paramKey = "twoKey";
+		String paramValue = "twoValue";
 		Properties properties = new Properties();
-		properties.put("twoKey", "twoValue");
-		TACAnalyticsService.getInstance().trackEvent(this, new TACAnalyticsEvent("twoEvent", properties));
+		properties.put(paramKey, paramValue);
+		TACAnalyticsService.getInstance().trackEvent(this, new TACAnalyticsEvent(eventId, properties));
+		showFeedback(String.format("已统计事件 %s , 参数 {%s = %s}", eventId, paramKey, paramValue));
 	}
 
 	public void trackDurationEvent(View v) {
-		TACAnalyticsService.getInstance().trackEventDuration(this, new TACAnalyticsEvent("oneDurationEvent"), 2000);
+		String eventId = "oneDurationEvent";
+		int duration = 2000;
+		TACAnalyticsService.getInstance().trackEventDuration(this, new TACAnalyticsEvent(eventId), duration);
+		showFeedback(String.format("已统计事件 %s , 时长 %s", eventId, duration + "ms"));
 	}
 
 	public void trackDurationEventBegin(View v) {
+		String eventId = "twoDurationEvent";
+		String paramKey = "twoKeyDuration";
+		String paramValue = "twoValueDuration";
 		Properties properties = new Properties();
-		properties.put("twoKeyDuration", "twoValueDuration");
-		TACAnalyticsService.getInstance().trackEventDurationBegin(this, new TACAnalyticsEvent("twoDurationEvent", properties));
+		properties.put(paramKey, paramValue);
+		TACAnalyticsService.getInstance().trackEventDurationBegin(this, new TACAnalyticsEvent(eventId, properties));
+		showFeedback(String.format("开始统计时长事件 %s , 参数 {%s = %s}", eventId, paramKey, paramValue));
 	}
 
 	public void trackDurationEventEnd(View v) {
+		String eventId = "twoDurationEvent";
+		String paramKey = "twoKeyDuration";
+		String paramValue = "twoValueDuration";
 		Properties properties = new Properties();
-		properties.put("twoKeyDuration", "twoValueDuration");
-		TACAnalyticsService.getInstance().trackEventDurationEnd(this, new TACAnalyticsEvent("twoDurationEvent", properties));
+		properties.put(paramKey, paramValue);
+		TACAnalyticsService.getInstance().trackEventDurationEnd(this, new TACAnalyticsEvent(eventId, properties));
+		showFeedback(String.format("结束统计时长事件 %s , 参数 {%s = %s}", eventId, paramKey, paramValue));
+	}
+
+	public void reportCustomProperty(View view) {
+		Properties properties = new Properties();
+		properties.setProperty("financing_degree", "10");
+		TACAnalyticsService.getInstance().setUserProperties(this, properties);
+		showFeedback(String.format("上报用户属性  %s", properties));
 	}
 
 	public void newSession(View v) {
 		TACAnalyticsService.getInstance().exchangeNewSession(this);
+		showFeedback("开启一个新回话");
 	}
 
 	public void trackPage(View v) {
 		startActivity(new Intent(this, SecondActivity.class));
+	}
+
+	public void startWebView(View v) {
+		startActivity(new Intent(this, WebViewActivity.class));
 	}
 
 //	public void trackNetworkMetrics(View v) {
@@ -101,12 +133,6 @@ public class AnalyticsMainActivity extends Activity {
 //		}
 //		// 上报接口监控的信息
 //		TACAnalyticsService.getInstance().trackNetworkMetrics(this, monitor);
-//	}
-//
-//	public void setUserProperties(View v) {
-//		Properties properties = new Properties();
-//		properties.put("name", "abc");
-//		TACAnalyticsService.getInstance().setUserProperties(this, properties);
 //	}
 //
 //	public void getProperty(View v) {

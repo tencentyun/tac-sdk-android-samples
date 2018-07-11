@@ -10,75 +10,83 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
+        android:padding="20dp"
         tools:context="com.tencent.qcloud.tester.ShareActivity">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
             android:onClick="shareWebPage"
             android:text="分享网页" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
             android:onClick="shareText"
             android:text="分享文本" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
             android:onClick="shareBitmap"
             android:text="分享Bitmap" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
             android:onClick="shareMusic"
             android:text="分享音乐" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
             android:onClick="shareVideo"
             android:text="分享视频" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
             android:onClick="sharePhotoFile"
             android:text="分享本地图片" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
             android:onClick="shareMultiPhotoFiles"
             android:text="分享多张本地图片" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
             android:onClick="shareVideoFile"
             android:text="分享本地视频" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
             android:onClick="shareMultiVideoFiles"
             android:text="分享多个本地视频" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
             android:onClick="shareFile"
             android:text="分享本地文件" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
             android:onClick="shareMultiFiles"
             android:text="分享多个本地文件" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:lineSpacingExtra="1.2dp"
+            android:text="@string/check_share_on_console"
+            android:autoLink="web"
+            android:textSize="16sp"/>
 
     </LinearLayout>
 </ScrollView>

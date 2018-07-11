@@ -1,12 +1,15 @@
 package com.tencent.tac.tacstorage;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tencent.qcloud.core.common.QCloudServiceException;
 import com.tencent.qcloud.core.http.HttpRequest;
 import com.tencent.tac.R;
 import com.tencent.tac.TACApplication;
@@ -27,14 +30,19 @@ import java.io.File;
  * Copyright 2010-2017 Tencent Cloud. All Rights Reserved.
  */
 
-public class StorageActivity extends Activity {
+public class StorageActivity extends AppCompatActivity {
 
     private TACStorageService tacStorageService;
+
+    private TextView fileUriView;
+    private Uri pickedFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.storage_activity_main);
+
+        fileUriView = findViewById(R.id.file_uri);
 
         TACApplicationOptions applicationOptions = TACApplication.options();
         TACStorageOptions storageOptions = applicationOptions.sub("storage");
@@ -48,21 +56,43 @@ public class StorageActivity extends Activity {
                 .build());
 
         tacStorageService = TACStorageService.getInstance();
+
+    }
+
+    private void showFeedback(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public void pickFile(View view) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0 && data != null && data.getData() != null) {
+            fileUriView.setText(data.getDataString());
+            pickedFile = data.getData();
+        }
     }
 
     public void uploadFile(View view) {
         TACStorageReference reference = tacStorageService.referenceWithPath("/tac_test/tmp");
-        byte[] tmpData = new byte[200];
-        for (int i = 0; i < tmpData.length; i++) {
-            tmpData[i] = 1;
-        }
-        reference.putData(tmpData, null).addResultListener(new StorageResultListener<TACStorageTaskSnapshot>() {
+        showFeedback("开始上传文件到 " + reference.getPath());
+        reference.putFile(pickedFile, null).addResultListener(new StorageResultListener<TACStorageTaskSnapshot>() {
             @Override
             public void onSuccess(final TACStorageTaskSnapshot snapshot) {
                 showMessage(new Runnable() {
                     @Override
                     public void run() {
+                        TACStorageReference ref = snapshot.getStorage();
+                        String url = "https://" + ref.getBucket() + ".cos." + ref.getRegion() + ".myqcloud.com" + ref.getPath();
+                        Log.d("Storage", "上传成功: " + url);
                         Toast.makeText(StorageActivity.this, "上传成功", Toast.LENGTH_LONG).show();
+
+                        TextView remoteUrlView = findViewById(R.id.remote_file_url);
+                        remoteUrlView.setText("远程文件url是：" + url);
                     }
                 });
             }
@@ -84,6 +114,7 @@ public class StorageActivity extends Activity {
     public void downloadFile(View view) {
         TACStorageReference reference = tacStorageService.referenceWithPath("/tac_test/tmp");
         Uri fileUri = Uri.fromFile(new File(getExternalCacheDir() + File.separator + "local_tmp"));
+        showFeedback("开始下载远程文件： " + reference.getPath());
         reference.downloadToFile(fileUri).addResultListener(new StorageResultListener<TACStorageTaskSnapshot>() {
             @Override
             public void onSuccess(TACStorageTaskSnapshot snapshot) {
@@ -100,6 +131,14 @@ public class StorageActivity extends Activity {
                 showMessage(new Runnable() {
                     @Override
                     public void run() {
+                        if (snapshot.getError() instanceof QCloudServiceException) {
+                            QCloudServiceException exception = (QCloudServiceException) snapshot.getError();
+                            if (exception.getStatusCode() == 404) {
+                                Toast.makeText(StorageActivity.this, "文件不存在。请先点击 '上传文件' 上传",
+                                        Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                        }
                         Toast.makeText(StorageActivity.this, "下载失败，" +
                                 snapshot.getError(), Toast.LENGTH_LONG).show();
                     }
@@ -116,6 +155,7 @@ public class StorageActivity extends Activity {
 
     public void deleteFile(View view) {
         TACStorageReference reference = tacStorageService.referenceWithPath("/tac_test/tmp");
+        showFeedback("开始删除远程文件： " + reference.getPath());
         reference.delete().addResultListener(new StorageResultListener<TACStorageTaskSnapshot>() {
             @Override
             public void onSuccess(TACStorageTaskSnapshot snapshot) {

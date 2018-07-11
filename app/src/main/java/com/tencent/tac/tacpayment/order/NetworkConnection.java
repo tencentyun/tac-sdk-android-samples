@@ -46,10 +46,7 @@ public abstract class NetworkConnection {
                     is = conn.getInputStream();
                     content = readInputStream(is);
                     Log.d("payment", "content is " + content);
-
-                    JSONObject jsonObject = new JSONObject(content);
-                    String payinfo = jsonObject.optString("pay_info");
-                    callback.onResult(payinfo);
+                    callback.onResult(content);
                 } catch (Exception e) {
                     e.printStackTrace();
                     // throw new RuntimeException(e);

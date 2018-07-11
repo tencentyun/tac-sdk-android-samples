@@ -1,16 +1,19 @@
 package com.tencent.tac.tacsocial;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.tencent.tac.R;
-import com.tencent.tac.TACApplication;
+import com.tencent.tac.social.share.PlainTextObject ;
 import com.tencent.tac.social.share.BitmapObject;
 import com.tencent.tac.social.share.FileObject;
 import com.tencent.tac.social.share.ObjectMetadata;
@@ -26,7 +29,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShareActivity extends Activity {
+public class ShareActivity extends AppCompatActivity {
 
     TACShareDialog shareDialog = new TACShareDialog();
 
@@ -39,10 +42,10 @@ public class ShareActivity extends Activity {
 
         setContentView(R.layout.activity_share);
 
-        TACApplication.configure(this);
-
         musicAlbum = BitmapFactory.decodeResource(getResources(), R.drawable.music_album);
         videoAlbum = BitmapFactory.decodeResource(getResources(), R.drawable.video_thumb);
+
+        shareDialog.onPageView();
     }
 
     @Override
@@ -54,22 +57,22 @@ public class ShareActivity extends Activity {
     }
 
     public void shareWebPage(View view) {
-        UrlObject urlObject = new UrlObject("http://www.qq.com");
-        urlObject.setMetadata(new ObjectMetadata.Builder().title("QQ").description("QQ HomePage").build());
+        UrlObject urlObject = new UrlObject("http://carsonxu.com/tac/app_share_sample.html");
+        urlObject.setMetadata(new ObjectMetadata.Builder().title("ShareSample")./*description("ShareSample").*/build());
 
-        shareDialog.shareUrl(this, urlObject);
+        shareDialog.share(this, urlObject);
     }
 
     public void shareText(View view) {
-        shareDialog.sharePlainText(this, "this is a plain text");
+        shareDialog.share(this, new PlainTextObject("this is a plain text"));
     }
 
     public void shareBitmap(View view) {
-        shareDialog.shareBitmap(this, new BitmapObject(musicAlbum));
+        shareDialog.share(this, new BitmapObject(musicAlbum));
     }
 
     public void shareMusic(View view) {
-        UrlObject urlObject = new UrlObject("http://music.163.com/#/share/2095551/3510133339");
+        UrlObject urlObject = new UrlObject("http://music.163.com/share/2095551/3510133339");
         urlObject.setMetadata(new ObjectMetadata.Builder().audio()
                 .thumb(musicAlbum)
                 .thumbUrl("http://p1.music.126.net/0SDC5efp1iJZ6g9Jw1fcnQ==/793847395278362.jpg?param=130y130")
@@ -77,7 +80,7 @@ public class ShareActivity extends Activity {
                 .description("諫山実生")
                 .build());
 
-        shareDialog.shareUrl(this, urlObject);
+        shareDialog.share(this, urlObject);
     }
 
     public void shareVideo(View view) {
@@ -88,7 +91,7 @@ public class ShareActivity extends Activity {
                 .title("【面筋哥×波澜哥】我的烤面筋，融化你的心！")
                 .build());
 
-        shareDialog.shareUrl(this, urlObject);
+        shareDialog.share(this, urlObject);
     }
 
     public void sharePhotoFile(View view) {
@@ -96,14 +99,15 @@ public class ShareActivity extends Activity {
         FileObject fileObject = new FileObject(photoFile.getPath());
         fileObject.setMetadata(new ObjectMetadata.Builder().image().build());
 
-        shareDialog.shareFile(this, fileObject);
+        shareDialog.share(this, fileObject);
     }
 
     public void shareVideoFile(View view) {
         File videoFile = getVideoFile();
-        FileObject fileObject = new FileObject(videoFile.getPath());
+        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", videoFile);
+        FileObject fileObject = new FileObject(uri.toString());
         fileObject.setMetadata(new ObjectMetadata.Builder().video().build());
-        shareDialog.shareFile(this, fileObject);
+        shareDialog.share(this, fileObject);
     }
 
     public void shareMultiPhotoFiles(View view) {
@@ -112,7 +116,7 @@ public class ShareActivity extends Activity {
         files.add(new FileObject(getVideoPhotoFiles().getPath()));
         ObjectMetadata metadata = new ObjectMetadata.Builder().image().build();
 
-        shareDialog.shareMultiFiles(this, files, metadata);
+        shareDialog.share(this, files, metadata);
     }
 
     public void shareMultiVideoFiles(View view) {
@@ -121,12 +125,12 @@ public class ShareActivity extends Activity {
         files.add(new FileObject(getVideoFile().getPath()));
         ObjectMetadata metadata = new ObjectMetadata.Builder().video().build();
 
-        shareDialog.shareMultiFiles(this, files, metadata);
+        shareDialog.share(this, files, metadata);
     }
 
     public void shareFile(View view) {
         File file = getRawFile();
-        shareDialog.shareFile(this, new FileObject(file.getPath()));
+        shareDialog.share(this, new FileObject(file.getPath()));
     }
 
     public void shareMultiFiles(View view) {
@@ -135,7 +139,7 @@ public class ShareActivity extends Activity {
         files.add(new FileObject(getRawFile().getPath()));
         ObjectMetadata metadata = new ObjectMetadata.Builder().mimeType("text/plain").build();
 
-        shareDialog.shareMultiFiles(this, files, metadata);
+        shareDialog.share(this, files, metadata);
     }
 
     private File getRawFile() {

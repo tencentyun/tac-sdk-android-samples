@@ -1,11 +1,14 @@
 package com.tencent.tac;
 
 import android.Manifest;
-import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.tencent.tac.tacanalytics.AnalyticsMainActivity;
@@ -21,7 +24,7 @@ import com.tencent.tac.tacstorage.StorageActivity;
  * Copyright 2010-2017 Tencent Cloud. All Rights Reserved.
  */
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 0;
 
@@ -30,54 +33,66 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tac_activity_main);
+        requestPermissions();
     }
 
     public void onCrashMainClicked(View view) {
-
-        Intent intent = new Intent(this, CrashMainActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, CrashMainActivity.class));
     }
 
     public void onAnalyticsClicked(View view) {
-
-        Intent intent = new Intent(this, AnalyticsMainActivity.class);
-        startActivity(intent);
-    }
-
-    public void onPaymentClicked(View view) {
-
-        Intent intent = new Intent(this, PaymentMainActivity.class);
-        startActivity(intent);
-
+        startActivity(new Intent(this, AnalyticsMainActivity.class));
     }
 
     public void onMessageClicked(View view) {
+        startActivity(new Intent(this, MessagingMainActivity.class));
+    }
 
-        Intent intent = new Intent(this, MessagingMainActivity.class);
-        startActivity(intent);
+    public void onPaymentClicked(View view) {
+        startOfficialActivity(PaymentMainActivity.class);
     }
 
     public void onStorageClicked(View view) {
-        startActivity(new Intent(this, StorageActivity.class));
+        startOfficialActivity(StorageActivity.class);
     }
 
     public void onAuthorizationClicked(View view) {
-        startActivity(new Intent(this, AuthMainActivity.class));
+        startOfficialActivity(AuthMainActivity.class);
     }
 
     public void onShareClicked(View view) {
-        startActivity(new Intent(this, ShareActivity.class));
+        startOfficialActivity(ShareActivity.class);
     }
 
+    private void startOfficialActivity(Class clazz) {
+        boolean isOfficial = "com.tencent.tac.sample".equals(getPackageName());
+        if (isOfficial) {
+            startActivity(new Intent(this, clazz));
+            return;
+        }
 
-    private boolean checkPermissions() {
-        return Build.VERSION.SDK_INT < 23 || PackageManager.PERMISSION_GRANTED == checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName("com.tencent.tac.sample", clazz.getName()));
+        try {
+            startActivity(intent);
+            return;
+        } catch (ActivityNotFoundException e) {
+        }
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        NotOfficialDialog dialog = new NotOfficialDialog();
+        dialog.show(ft, "dialog");
     }
-
 
     private void requestPermissions() {
         if (Build.VERSION.SDK_INT > 23) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
         }
     }
 
@@ -87,6 +102,5 @@ public class MainActivity extends Activity {
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-
     }
 }

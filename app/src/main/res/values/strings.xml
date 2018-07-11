@@ -1,23 +1,24 @@
 <resources>
-    <string name="app_name">TACDemo</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">MobileLine体验</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_first">FirstActivity</string>
-    <string name="title_activity_lbs">LbsActivity</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_lbs_main">LbsMainActivity</string>
+    <string name="check_data_on_console">上报之后，请前往 MobileLine 控制台查看数据: \nhttps://console.cloud.tencent.com/tac</string>
+    <string name="push_message_on_console">服务启动成功后，请前往 MobileLine 控制台推送消息: \nhttps://console.cloud.tencent.com/tac</string>
+    <string name="check_crash_on_console">测试之后，请前往 MobileLine 控制台查看异常数据: \nhttps://console.cloud.tencent.com/tac</string>
+    <string name="check_pay_on_console">支付之后，请前往 MobileLine 控制台查看交易数据: \nhttps://console.cloud.tencent.com/tac</string>
+    <string name="check_share_on_console">分享之后，请前往 MobileLine 控制台查看分享数据，当天的数据隔天可以查看: \nhttps://console.cloud.tencent.com/tac</string>
+    <string name="check_storage_on_console">上传之后，请前往 MobileLine 控制台查看文件: \nhttps://console.cloud.tencent.com/tac</string>
 
+    <string name="analytics_main">腾讯移动分析（MTA）</string>
+    <string name="messaging_main">腾讯移动推送（信鸽）</string>
+    <string name="crash_main">崩溃监控服务（bugly）</string>
+    <string name="payment_main">腾讯计费（米大师）</string>
+    <string name="storage_main">移动存储（Storage）</string>
+    <string name="auth_main">微信QQ登录</string>
+    <string name="share_main">社交分享</string>
 
-    <string name="analytics_main">Analytics主页</string>
-    <string name="messaging_main">Messaging主页</string>
-    <string name="crash_main">Crash主页</string>
-    <string name="payment_main">Payment主页</string>
-    <string name="storage_main">Storage主页</string>
-    <string name="auth_main">三方登录主页</string>
-
-    <string name="java_crash_test">Java Crash 测试</string>
-    <string name="anr_crash_test">ANR Crash 测试</string>
-    <string name="native_crash_test">Native Crash 测试</string>
+    <string name="java_crash_test">模拟 Java Crash</string>
+    <string name="anr_crash_test">模拟 ANR Crash</string>
+    <string name="native_crash_test">模拟 Native Crash</string>
 
 
     <string name="coin_payment">游戏币支付</string>
@@ -28,16 +29,27 @@
     <string name="pay_m_number">扣除游戏币数量</string>
     <string name="wechat_pay">微信支付</string>
     <string name="qq_pay">QQ 支付</string>
+    <string name="account_recharge">充值</string>
+    <string name="request_balance">查询余额</string>
+    <string name="payment_pay">支付</string>
+    <string name="payment_present">赠送</string>
+    <string name="deposit_account">托管账户相关接口，实际使用时请通过服务器调用，不要直接在终端调用。</string>
+    <string name="pay_channel">渠道支付相关接口，请在服务器上下单，不要直接在终端下单</string>
 
-    <string name="storage_download_file">下载文件</string>
-    <string name="storage_upload_file">上传文件</string>
-    <string name="storage_delete_file">删除文件</string>
+    <string name="storage_pick_file">请选择本地文件</string>
+    <string name="storage_download_file">从 /tac_test/tmp 下载文件</string>
+    <string name="storage_upload_file">上传文件到 /tac_test/tmp</string>
+    <string name="storage_delete_file">删除 /tac_test/tmp 文件</string>
     <string name="title_activity_auth_main">AuthMainActivity</string>
 
-    <string name="messaging_start">启动 Messaging 服务</string>
-    <string name="messaging_stop">停止 Messaging 服务</string>
-    <string name="messaging_get_token">获取 token </string>
-    <string name="messaging_local_notification">添加本地通知</string>
-    <string name="add_notification_builder">添加自定义Builder</string>
+    <string name="messaging_start">启动服务</string>
+    <string name="messaging_stop">停止服务</string>
+    <string name="messaging_get_token">获取设备 token </string>
+    <string name="messaging_local_notification">推送本地通知</string>
+    <string name="add_notification_builder">设置自定义消息样式</string>
+
+    <string name="please_use_official_app_title">不支持体验该功能</string>
+    <string name="please_use_official_app_message">部分功能需要您到三方平台申请相应权限之后才能使用，您可以下载官方示例体验功能。</string>
+    <string name="please_go_to_download_official_app">前往下载</string>
 
 </resources>

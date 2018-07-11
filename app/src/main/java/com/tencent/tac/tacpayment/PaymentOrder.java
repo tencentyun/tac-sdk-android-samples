@@ -44,8 +44,8 @@ public class PaymentOrder extends NetworkConnection {
             result.append("channel=" + channel + "&");
 
 //            result.append("sub_appid=1450013782&");
-            result.append("amount=2&");
-            result.append("original_amount=4&");
+            result.append("amount=1&");
+            result.append("original_amount=1&");
             result.append("product_name=年夜饭10人套餐&");
             result.append("product_detail=openmidas_android_test&");
             result.append("ts=" + getGMTime() + "&");

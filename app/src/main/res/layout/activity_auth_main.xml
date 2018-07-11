@@ -9,7 +9,7 @@
 
     <Button
         android:id="@+id/btn_qq_login"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_width="match_parent"
         android:onClick="loginQQ"
         android:text="qq登录" />
@@ -17,9 +17,23 @@
     <Button
         android:id="@+id/btn_wechat_login"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:onClick="loginWeChat"
         android:text="微信登录" />
+
+    <Button
+        android:id="@+id/btn_refresh_wechat_token"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:onClick="RefreshWeChatToken"
+        android:text="token刷新" />
+
+    <Button
+        android:id="@+id/btn_get_user_info"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:onClick="GetUserInfo"
+        android:text="获取用户信息" />
 
     <TextView
         android:id="@+id/platform"
@@ -34,27 +48,13 @@
         android:paddingLeft="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="当前登录用户："/>
+        android:text="登录返回结果："/>
 
     <TextView
         android:id="@+id/current_user"
         android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/btn_refresh_wechat_token"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:onClick="RefreshWeChatToken"
-        android:text="token刷新" />
-
-    <Button
-        android:id="@+id/btn_get_user_info"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:onClick="GetUserInfo"
-        android:text="获取用户信息" />
 
     <TextView
         android:id="@+id/user_info"

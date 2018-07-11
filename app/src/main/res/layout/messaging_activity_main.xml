@@ -64,5 +64,16 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:lineSpacingExtra="1.2dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="@string/push_message_on_console"
+        android:autoLink="web"
+        android:textSize="16sp"/>
+
 
 </LinearLayout>

@@ -2,16 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tencent.tac">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application
-        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -21,18 +24,16 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".tacanalytics.AnalyticsMainActivity" />
+        <activity android:name=".tacanalytics.AnalyticsMainActivity" />
         <activity android:name=".tacanalytics.SecondActivity" />
+        <activity android:name=".tacanalytics.WebViewActivity"/>
         <activity android:name=".taccrash.CrashMainActivity" />
-        <activity android:name=".tacpayment.PaymentMainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity android:name=".tacstorage.StorageActivity" />
-        <activity android:name=".tacauthorization.AuthMainActivity"  />
-
         <activity android:name=".tacmessaging.MessagingMainActivity" />
 
-        <activity android:name=".tacsocial.ShareActivity" />
+        <activity android:name=".tacpayment.PaymentMainActivity" android:exported="true"/>
+        <activity android:name=".tacstorage.StorageActivity"  android:exported="true"/>
+        <activity android:name=".tacauthorization.AuthMainActivity"   android:exported="true"/>
+        <activity android:name=".tacsocial.ShareActivity"  android:exported="true"/>
 
         <!-- Messaging 服务结果通知 -->
         <receiver android:name=".tacmessaging.MyReceiver">
@@ -40,10 +41,16 @@
                 <action android:name="com.tencent.tac.messaging.action.CALLBACK" />
             </intent-filter>
         </receiver>
-
-        <meta-data
-            android:name="com.tencent.tac.channel"
-            android:value="${tac_channel}" />
+        
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
     </application>
 
 </manifest>

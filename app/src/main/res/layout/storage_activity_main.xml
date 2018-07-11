@@ -6,8 +6,30 @@
     tools:context=".tacstorage.StorageActivity"
     android:layout_height="match_parent">
 
-    <Button android:id="@+id/coin_payment"
+    <Button android:id="@+id/pick_file"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        android:onClick="pickFile"
+        android:text="@string/storage_pick_file"
+        android:textAllCaps="false"/>
+
+    <TextView
+        android:id="@+id/file_uri"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="15sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/coin_payment"
+        android:layout_marginTop="40dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_width="match_parent"
@@ -33,5 +55,23 @@
         android:onClick="deleteFile"
         android:text="@string/storage_delete_file"
         android:textAllCaps="false"/>
+
+    <TextView
+        android:id="@+id/remote_file_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="1.2dp"
+        android:padding="10dp"
+        android:autoLink="web"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="1.2dp"
+        android:padding="10dp"
+        android:text="@string/check_storage_on_console"
+        android:autoLink="web"
+        android:textSize="16sp"/>
 
 </LinearLayout>

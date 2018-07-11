@@ -8,5 +8,5 @@ package com.tencent.tac.tacpayment.order;
 public interface PaymentCallback {
 
 
-    void onResult(String payInfo);
+    void onResult(String result);
 }

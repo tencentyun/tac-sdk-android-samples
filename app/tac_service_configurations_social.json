@@ -1,0 +1,17 @@
+{
+  "services": {
+    "social": {
+      "qq": {
+        "appId": "1106531649"
+      },
+      "wechat": {
+        "appId": "wxefa56787037ee550"
+      },
+      "weibo": {
+        "appId": "653676141",
+        "redirectUrl":"http://www.sina.com",
+        "scope":""
+      }
+    }
+  }
+}
