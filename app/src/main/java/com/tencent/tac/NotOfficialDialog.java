@@ -20,7 +20,7 @@ public class NotOfficialDialog extends AppCompatDialogFragment {
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
-                .setIcon(R.drawable.ic_launcher_foreground)
+                .setIcon(R.drawable.ic_launcher_background)
                 .setTitle(R.string.please_use_official_app_title)
                 .setMessage(R.string.please_use_official_app_message)
                 .setPositiveButton(R.string.please_go_to_download_official_app, (dialog, which) -> {
@@ -36,7 +36,7 @@ public class NotOfficialDialog extends AppCompatDialogFragment {
 
     private void gotoDownload() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("http://tac-android-libs-1253960454.file.myqcloud.com/app-spec-release.apk"));
+        intent.setData(Uri.parse("http://tac-android-libs-1253960454.file.myqcloud.com/tac-sample-spec.apk"));
         startActivity(intent);
     }
 }
