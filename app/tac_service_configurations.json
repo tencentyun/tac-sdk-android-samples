@@ -14,7 +14,12 @@
         },
         "messaging": {
             "appId": "2100275610",
-            "appKey": "A9M4X266CZUM"
+            "appKey": "A9M4X266CZUM",
+            "huaweiAppId": "100250245",
+            "xiaomiAppId": "2882303761517764597",
+            "xiaomiAppKey": "5441776433597",
+            "meizuAppId": "113008",
+            "meizuAppKey": "171ace684f6a40a1b30e15b80a1a2304"
         },
         "crash": {
             "appId": "a32cdd6277"
@@ -25,6 +30,19 @@
         "storage": {
             "bucket": "tac-demo-storage-1253653367",
             "region": "ap-guangzhou"
+        },
+        "social": {
+            "qq": {
+                "appId": "1106531649"
+            },
+            "wechat": {
+                "appId": "wxefa56787037ee550"
+            },
+            "weibo": {
+                "appId": "653676141",
+                "redirectUrl":"http://www.sina.com",
+                "scope":""
+            }
         }
     }
 }
