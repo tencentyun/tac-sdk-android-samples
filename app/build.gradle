@@ -81,19 +81,15 @@ android.applicationVariants.all { variant ->
     }
 }
 
-def TAC_VERSION = '1.2.0'
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "com.tencent.tac:tac-all:1.2.0"
-    //    implementation "com.tencent.tac:tac-core:1.2.0"
-    //    implementation "com.tencent.tac:tac-messaging:1.2.0"
-    //    implementation "com.tencent.tac:tac-messaging-lite:1.2.0"
-    //    implementation "com.tencent.tac:tac-social:1.2.0"
-    //    implementation "com.tencent.tac:tac-payment:1.2.0"
-    //    implementation "com.tencent.tac:tac-storage:1.2.0"
-    //    implementation "com.tencent.tac:tac-crash:1.2.0"
-    //    implementation "com.tencent.tac:tac-authorization:1.2.0"
+    implementation 'com.tencent.tac:tac-core:1.2.+'
+    implementation 'com.tencent.tac:tac-messaging:1.2.+'
+    implementation 'com.tencent.tac:tac-crash:1.2.+'
+    implementation 'com.tencent.tac:tac-payment:1.2.+'
+    implementation 'com.tencent.tac:tac-social:1.2.+'
+    implementation 'com.tencent.tac:tac-authorization:1.2.+'
+    implementation 'com.tencent.tac:tac-storage:1.2.+'
     implementation 'com.android.support:appcompat-v7:26.+'
     androidTestImplementation 'com.android.support.test:rules:0.5'
     androidTestImplementation 'com.android.support.test:runner:0.5'
